@@ -18,3 +18,4 @@ debug/dist/
 .cache/
 .tsbuildinfo
 .wa-auth/
+.local-data/

@@ -14,6 +14,7 @@ import { startConsolidationLoop } from "./consolidation.js";
 import { cancelAgent, retryAgent } from "./execution-agent.js";
 import { createComposioRouter } from "./composio-routes.js";
 import { startWhatsapp } from "./whatsapp.js";
+import { createSetupRouter } from "./setup-routes.js";
 
 async function main() {
   await loadIntegrations();
@@ -36,6 +37,7 @@ async function main() {
 
   app.use("/sendblue", createSendblueRouter());
   app.use("/composio", createComposioRouter());
+  app.use("/setup", createSetupRouter());
 
   app.post("/agents/:id/cancel", (req, res) => {
     const ok = cancelAgent(req.params.id);
@@ -92,6 +94,7 @@ async function main() {
     console.log(`boop-agent server listening on :${port}`);
     console.log(`  health      GET  http://localhost:${port}/health`);
     console.log(`  chat        POST http://localhost:${port}/chat`);
+    console.log(`  setup       GET  http://localhost:${port}/setup`);
     console.log(`  sendblue    POST http://localhost:${port}/sendblue/webhook`);
     console.log(`  websocket   WS   ws://localhost:${port}/ws`);
   });

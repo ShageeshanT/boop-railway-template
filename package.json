@@ -1,5 +1,5 @@
 {
-  "name": "boot-railway-template",
+  "name": "boop-railway-template",
   "version": "0.1.0",
   "private": true,
   "description": "WhatsApp-first Claude agent template, deployable to Railway. Forked from boop-agent.",
