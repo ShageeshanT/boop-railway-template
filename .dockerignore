@@ -1,0 +1,36 @@
+# Don't bake local state / secrets into the image.
+
+node_modules
+debug/node_modules
+
+# Local env / data — wizard writes the real one to the volume
+.env
+.env.local
+.env.*.local
+.local-data
+data
+
+# WhatsApp session — generated at runtime on the volume
+.wa-auth
+
+# Build artifacts — built fresh inside Dockerfile
+debug/dist
+dist
+build
+*.tsbuildinfo
+
+# Convex generated types — regenerated in builder stage
+convex/_generated
+
+# Editor / OS / VCS noise
+.git
+.github
+.vscode
+.idea
+.DS_Store
+*.log
+
+# Cache
+.cache
+.vite
+.convex

@@ -2,7 +2,7 @@
   <img src="assets/boop.gif" alt="Boop" width="220" />
 </p>
 
-# boot-railway-template
+# boop-railway-template
 
 A WhatsApp-first personal AI agent template built on the [Claude Agent SDK](https://docs.claude.com/en/api/agent-sdk/overview), designed for one-click deploy to [Railway](https://railway.app).
 
@@ -86,8 +86,8 @@ You do **not** need iMessage, Sendblue, ngrok, an iPhone, or a Mac.
 
 ```bash
 # 1. Clone + install
-git clone https://github.com/ShageeshanT/boot-railway-template.git
-cd boot-railway-template
+git clone https://github.com/ShageeshanT/boop-railway-template.git
+cd boop-railway-template
 npm install
 
 # 2. Install Claude Code (one-time, global) and sign in
@@ -274,7 +274,7 @@ Every execution agent's `total_cost_usd` comes from the Claude Agent SDK's `resu
 ## Project layout
 
 ```
-boot-railway-template/
+boop-railway-template/
 ├── server/
 │   ├── index.ts                   # Express + WS + HTTP routes
 │   ├── whatsapp.ts                # Baileys socket, inbound handler, outbound send
