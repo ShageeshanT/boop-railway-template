@@ -19,8 +19,8 @@ dist
 build
 *.tsbuildinfo
 
-# Convex generated types — regenerated in builder stage
-convex/_generated
+# Convex generated types — committed to the repo so builder doesn't need auth.
+# (No exclusion needed.)
 
 # Editor / OS / VCS noise
 .git

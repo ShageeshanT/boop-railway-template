@@ -7,7 +7,8 @@ build/
 *.log
 .DS_Store
 .convex/
-convex/_generated/
+# convex/_generated/ is committed so Docker/Railway builds don't need auth to codegen.
+# Re-run `npx convex dev` or `npx convex codegen` after schema changes and commit the diff.
 data/
 *.db
 *.db-journal

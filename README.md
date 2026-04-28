@@ -62,10 +62,11 @@ Built on:
 
 - [x] WhatsApp channel via Baileys
 - [x] `/data/.env` loader for persistent volume configs
-- [ ] Browser-based setup wizard (`/setup`, password-gated)
-- [ ] Dockerfile (Node 20 + Claude CLI baked in)
-- [ ] Railway template config + one-click Deploy button
-- [ ] Live management dashboard (status, logs, restart)
+- [x] Browser-based setup wizard (`/setup`, password-gated)
+- [x] Dockerfile (Node 20 + Claude CLI baked in)
+- [x] Railway template config + one-click Deploy button
+- [ ] Live log viewer in the wizard (currently use `railway logs` / SSH)
+- [ ] Pluggable model providers (Gemini / Groq via translation proxy)
 
 ---
 
@@ -125,15 +126,52 @@ Once connected, message the linked WhatsApp account from a **different** number.
 
 ---
 
-## Deploy to Railway (coming)
+## Deploy to Railway
 
-This is what makes the template a template — coming in upcoming versions:
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/github/ShageeshanT/boop-railway-template)
 
-- **One-click Deploy** button that provisions the service + 1GB volume.
-- **`/setup` wizard** (password-gated) for entering env vars without SSH.
-- **`railway ssh` step** to log in once with `claude` — credentials persist on the volume.
+The template ships with a Dockerfile + `railway.json` for one-click deploys. It runs in a single service with a persistent volume for credentials.
 
-Until that lands, you can deploy manually with any Node hosting that supports persistent volumes — point `BOOP_DATA_DIR` at the volume mount and `WA_AUTH_DIR` at `<volume>/.wa-auth`.
+### One-time deploy steps
+
+1. **Click the Deploy button** above (or paste the repo URL into Railway → New Project → Deploy from GitHub).
+2. **Set required env vars** in the Railway service Variables tab:
+   - `SETUP_PASSWORD` — pick anything strong; gates the `/setup` wizard.
+   - `CONVEX_URL` — your Convex deployment URL (run `npx convex dev` locally first to get one). Same value goes for `VITE_CONVEX_URL`.
+3. **Add a volume**: Railway → service → Settings → Volumes → **+ New Volume**, mount path **`/data`**, size 1GB. The server reads/writes:
+   - `/data/.env` — wizard-written runtime config
+   - `/data/.claude/` — Claude CLI credentials (after step 5)
+   - `/data/.wa-auth/` — WhatsApp Baileys session
+4. **Deploy.** First build takes ~3–5 min. Once healthy, you'll have a public URL like `https://your-app.up.railway.app`.
+5. **Log in to Claude (one-time SSH step):**
+   ```bash
+   railway ssh
+   claude
+   # follow the device-flow URL in your local browser, paste the code back
+   exit
+   ```
+   Credentials now live on the `/data` volume — they survive redeploys.
+6. **Open `https://your-app.up.railway.app/setup`** in your browser. Enter `SETUP_PASSWORD`. Fill in the form (WhatsApp allowlist, Composio key if you want integrations, etc.). Click **Save & restart**.
+7. **Pair WhatsApp:** SSH back in and `railway logs` will show a QR code. On your phone: WhatsApp → Settings → Linked Devices → Link a device → scan.
+
+### Day-to-day
+
+- **Change config:** open `/setup`, edit, click Save & restart.
+- **Update Claude credentials:** `railway ssh`, run `claude` again.
+- **Re-pair WhatsApp:** SSH in, `rm -rf /data/.wa-auth`, watch `railway logs` for a fresh QR.
+- **View what's happening:** `railway logs` streams everything (`[turn ...]`, `[whatsapp]`, `[agent ...]`).
+
+### What the wizard manages
+
+| Section | Keys |
+|---|---|
+| WhatsApp | `WHATSAPP_ENABLED`, `WHATSAPP_ALLOWED_JIDS` |
+| Convex | `CONVEX_URL`, `VITE_CONVEX_URL` |
+| Anthropic | `ANTHROPIC_API_KEY` (optional — alternative to SSH login), `BOOP_MODEL` |
+| Composio | `COMPOSIO_API_KEY`, `COMPOSIO_USER_ID` |
+| Embeddings | `VOYAGE_API_KEY`, `OPENAI_API_KEY` (either, optional) |
+
+`SETUP_PASSWORD` itself is set in Railway's dashboard, not the wizard, since it gates the wizard.
 
 ---
 
